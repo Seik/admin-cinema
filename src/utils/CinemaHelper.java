@@ -4,6 +4,7 @@ import accesoaBD.AccesoaBD;
 import com.sun.istack.internal.NotNull;
 import modelo.Pelicula;
 import modelo.Proyeccion;
+import modelo.Sala;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -49,9 +50,18 @@ public class CinemaHelper {
         List<Proyeccion> showings = db.getProyeccion(title, date);
 
         for (Proyeccion showing : showings) {
-            hours.add(showing.getHoraInicio());
+            if (!isShowingFull(showing)) hours.add(showing.getHoraInicio());
         }
 
         return hours;
+    }
+
+    public boolean isShowingFull(Proyeccion showing) {
+        Sala room = showing.getSala();
+        if (room.getCapacidad() <= room.getEntradasVendidas()) {
+            return true;
+        }
+
+        return false;
     }
 }
