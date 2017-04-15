@@ -3,27 +3,29 @@ package utils;
 import accesoaBD.AccesoaBD;
 import com.sun.istack.internal.NotNull;
 import modelo.Pelicula;
+import modelo.Proyeccion;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Ivan on 15/4/17.
  */
 
-public class PeliculaUtils {
+public class CinemaHelper {
 
-    private static PeliculaUtils instance = null;
+    private static CinemaHelper instance = null;
 
     private AccesoaBD db;
 
-    private PeliculaUtils() {
+    private CinemaHelper() {
         db = new AccesoaBD();
     }
 
-    public static PeliculaUtils getInstance() {
+    public static CinemaHelper getInstance() {
         if (instance == null) {
-            instance = new PeliculaUtils();
+            instance = new CinemaHelper();
         }
         return instance;
     }
@@ -40,5 +42,16 @@ public class PeliculaUtils {
         }
 
         return null;
+    }
+
+    public List<String> getHoursShowings(String title, LocalDate date) {
+        List<String> hours = new ArrayList<>();
+        List<Proyeccion> showings = db.getProyeccion(title, date);
+
+        for (Proyeccion showing : showings) {
+            hours.add(showing.getHoraInicio());
+        }
+
+        return hours;
     }
 }
