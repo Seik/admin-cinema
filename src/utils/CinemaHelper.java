@@ -2,6 +2,7 @@ package utils;
 
 import accesoaBD.AccesoaBD;
 import com.sun.istack.internal.NotNull;
+import javafx.scene.control.Alert;
 import modelo.Pelicula;
 import modelo.Proyeccion;
 import modelo.Sala;
@@ -63,5 +64,14 @@ public class CinemaHelper {
         }
 
         return false;
+    }
+
+    public void showInfoDialog(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(null);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+
+        alert.showAndWait();
     }
 }
