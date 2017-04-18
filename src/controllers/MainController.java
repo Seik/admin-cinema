@@ -9,8 +9,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import modelo.Pelicula;
+import modelo.Proyeccion;
 import utils.CinemaHelper;
 
 import java.io.IOException;
@@ -39,6 +41,7 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        logger.log(Level.FINE, "Controller initialized");
 
     }
 
@@ -83,7 +86,14 @@ public class MainController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("../layouts/reservation_layout.fxml"));
-            Scene scene = new Scene(loader.load(), 600, 400);
+            VBox parent = loader.load();
+
+            ReservationController controller = loader.getController();
+            Proyeccion showing = CinemaHelper.getInstance().getShowing(movieSelector.getValue(),
+                    dateSelector.getValue(), hourSelector.getValue());
+            controller.setShowing(showing);
+
+            Scene scene = new Scene(parent);
             Stage stage = new Stage();
             stage.setTitle("Reservation");
             stage.setScene(scene);
