@@ -16,6 +16,7 @@ import javafx.util.converter.NumberStringConverter;
 import modelo.Proyeccion;
 import modelo.Reserva;
 import utils.CinemaHelper;
+import utils.CompletedTaskEvent;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -23,6 +24,7 @@ import java.util.ResourceBundle;
 public class ReservationController implements Initializable {
 
     private Proyeccion showing;
+    private CompletedTaskEvent handler;
 
     @FXML
     public TextField nameTextField;
@@ -67,6 +69,9 @@ public class ReservationController implements Initializable {
 
         CinemaHelper.getInstance().showInfoDialog("Reserva realizada con éxito.");
 
+        // Clean fields at main screen
+        handler.cleanFields();
+
         // Close window
         final Node source = (Node) event.getSource();
         final Stage stage = (Stage) source.getScene().getWindow();
@@ -81,5 +86,13 @@ public class ReservationController implements Initializable {
     public void setShowing(Proyeccion showing) {
         this.showing = showing;
         maxQuantityLabel.setText("/" + CinemaHelper.getInstance().getRemainingSeatsForShowing(showing));
+    }
+
+    /**
+     *  Sets a handler
+     * @param handler
+     */
+    public void setHandler(CompletedTaskEvent handler) {
+        this.handler = handler;
     }
 }

@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 import modelo.Pelicula;
 import modelo.Proyeccion;
 import utils.CinemaHelper;
+import utils.CompletedTaskEvent;
 
 import java.io.IOException;
 import java.net.URL;
@@ -38,6 +39,12 @@ public class MainController implements Initializable {
     public Button reservationButton;
     @FXML
     public Button purchaseButton;
+
+    private CompletedTaskEvent handler = () -> {
+        dateSelector.getEditor().clear();
+        movieSelector.getItems().clear();
+        hourSelector.getItems().clear();
+    };
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -92,6 +99,7 @@ public class MainController implements Initializable {
             Proyeccion showing = CinemaHelper.getInstance().getShowing(movieSelector.getValue(),
                     dateSelector.getValue(), hourSelector.getValue());
             controller.setShowing(showing);
+            controller.setHandler(handler);
 
             Scene scene = new Scene(parent);
             Stage stage = new Stage();
