@@ -8,7 +8,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Control;
 import javafx.scene.control.DatePicker;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import modelo.Pelicula;
@@ -113,6 +115,30 @@ public class MainController implements Initializable {
 
     @FXML
     public void onPurchase(ActionEvent actionEvent) {
+        if (dateSelector.getValue() == null || movieSelector.getValue() == null || hourSelector.getValue() == null) {
+            CinemaHelper.getInstance().showInfoDialog("Rellene todos los campos para continuar.");
+            return;
+        }
 
+        logger.log(Level.FINE, "Start purchase flow");
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("../layouts/purchase_layout.fxml"));
+            BorderPane parent = loader.load();
+
+            PurchaseController controller = loader.getController();
+            Proyeccion showing = CinemaHelper.getInstance().getShowing(movieSelector.getValue(),
+                    dateSelector.getValue(), hourSelector.getValue());
+            controller.setShowing(showing);
+            controller.setHandler(handler);
+
+            Scene scene = new Scene(parent);
+            Stage stage = new Stage();
+            stage.setTitle("Purchase");
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            logger.log(Level.SEVERE, "Failed to create new Window", e);
+        }
     }
 }
