@@ -62,6 +62,7 @@ public class ReservationController implements Initializable {
 
         if (quantity > CinemaHelper.getInstance().getRemainingSeatsForShowing(showing)) {
             CinemaHelper.getInstance().showErrorDialog("La cantidad introducida es mayor a la capacidad máxima.");
+            return;
         }
 
         Reserva reservation = new Reserva(name, phone, quantity);
