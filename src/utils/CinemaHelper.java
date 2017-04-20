@@ -12,10 +12,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Ivan on 15/4/17.
- */
-
 public class CinemaHelper {
 
     private static CinemaHelper instance = null;
