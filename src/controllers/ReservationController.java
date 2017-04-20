@@ -47,9 +47,15 @@ public class ReservationController implements Initializable {
 
         String name = nameTextField.getText().trim();
         String phone = phoneTextField.getText().trim();
+
+        if (quantityTextField.getText().trim().equals("") || quantityTextField.getText().trim().equals("0")) {
+            CinemaHelper.getInstance().showInfoDialog("La cantidad introducida tiene que ser > 0");
+            return;
+        }
+
         int quantity = Integer.valueOf(quantityTextField.getText().trim());
 
-        if (name.trim().isEmpty() || phone.isEmpty() || quantity == 0) {
+        if (name.trim().isEmpty() || phone.isEmpty()) {
             CinemaHelper.getInstance().showInfoDialog("Rellene todos los campos para continuar.");
             return;
         }
@@ -84,7 +90,8 @@ public class ReservationController implements Initializable {
     }
 
     /**
-     *  Sets a handler
+     * Sets a handler
+     *
      * @param handler
      */
     public void setHandler(CompletedTaskEvent handler) {
