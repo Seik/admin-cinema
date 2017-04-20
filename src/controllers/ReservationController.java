@@ -80,7 +80,7 @@ public class ReservationController implements Initializable {
     }
 
     /**
-     * Sets a showing
+     * Sets a showing for the controller
      *
      * @param showing
      */
@@ -90,7 +90,7 @@ public class ReservationController implements Initializable {
     }
 
     /**
-     * Sets a handler
+     * Sets a handler for the controller
      *
      * @param handler
      */

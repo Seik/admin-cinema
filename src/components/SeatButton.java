@@ -22,25 +22,17 @@ public class SeatButton extends Button {
         setFree();
     }
 
-    public void toggleSeat() {
-        if (!isReserved()) {
-            setReserved();
-        } else {
-            setFree();
-        }
-    }
-
-    private boolean isReserved() {
+    public boolean isReserved() {
         String css = getStyle();
 
         return css.contains(RESERVED);
     }
 
-    private void setFree() {
+    public void setFree() {
         setStyle("-fx-background-color: green;");
     }
 
-    private void setReserved() {
+    public void setReserved() {
         setStyle("-fx-background-color: red;" +
                 "class:" + RESERVED);
     }
