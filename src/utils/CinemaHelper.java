@@ -80,8 +80,25 @@ public class CinemaHelper {
         return maxSeats - seatsReserved;
     }
 
+    /**
+     * Get a showing based on title, date and hour
+     *
+     * @param title
+     * @param date
+     * @param hour
+     * @return
+     */
     public Proyeccion getShowing(String title, LocalDate date, String hour) {
         return db.getProyeccion(title, date, hour);
+    }
+
+    /**
+     * Save a showing
+     *
+     * @param showing
+     */
+    public void saveShowing(Proyeccion showing) {
+        db.salvarProyeccion(showing);
     }
 
     /**

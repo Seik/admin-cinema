@@ -69,6 +69,8 @@ public class ReservationController implements Initializable {
 
         showing.getReservas().add(reservation);
 
+        CinemaHelper.getInstance().saveShowing(showing);
+
         CinemaHelper.getInstance().showInfoDialog("Reserva realizada con éxito.");
 
         // Clean fields at main screen
