@@ -7,18 +7,10 @@ public class SeatButton extends Button {
 
     private final String RESERVED = "reserved";
 
+    private final String BOUGHT = "bought";
+
     public SeatButton() {
         super();
-        setFree();
-    }
-
-    public SeatButton(String text) {
-        super(text);
-        setFree();
-    }
-
-    public SeatButton(String text, Node graphic) {
-        super(text, graphic);
         setFree();
     }
 
@@ -28,12 +20,24 @@ public class SeatButton extends Button {
         return css.contains(RESERVED);
     }
 
+    public boolean isBought() {
+        String css = getStyle();
+
+        return css.contains(BOUGHT);
+    }
+
     public void setFree() {
         setStyle("-fx-background-color: green;");
     }
 
     public void setReserved() {
-        setStyle("-fx-background-color: red;" +
+        setStyle("-fx-background-color: blue;" +
                 "class:" + RESERVED);
     }
+
+    public void setBought() {
+        setStyle("-fx-background-color: red;" +
+                "class:" + BOUGHT);
+    }
+
 }

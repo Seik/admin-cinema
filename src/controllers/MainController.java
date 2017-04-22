@@ -96,9 +96,10 @@ public class MainController implements Initializable {
             loader.setLocation(getClass().getResource("../layouts/reservation_layout.fxml"));
             VBox parent = loader.load();
 
-            ReservationController controller = loader.getController();
             Proyeccion showing = CinemaHelper.getInstance().getShowing(movieSelector.getValue(),
                     dateSelector.getValue(), hourSelector.getValue());
+
+            ReservationController controller = loader.getController();
             controller.setShowing(showing);
             controller.setHandler(handler);
 
@@ -125,11 +126,13 @@ public class MainController implements Initializable {
             loader.setLocation(getClass().getResource("../layouts/purchase_layout.fxml"));
             BorderPane parent = loader.load();
 
-            PurchaseController controller = loader.getController();
             Proyeccion showing = CinemaHelper.getInstance().getShowing(movieSelector.getValue(),
                     dateSelector.getValue(), hourSelector.getValue());
+
+            PurchaseController controller = loader.getController();
             controller.setShowing(showing);
             controller.setHandler(handler);
+            controller.init();
 
             Scene scene = new Scene(parent);
             Stage stage = new Stage();

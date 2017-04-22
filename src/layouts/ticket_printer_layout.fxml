@@ -1,9 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.AnchorPane?>
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="controllers.TicketPrinterController"
-            prefHeight="400.0" prefWidth="600.0">
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-</AnchorPane>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
+            prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.TicketPrinterController">
+    <top>
+        <Label text="Impresión de entrada" BorderPane.alignment="CENTER">
+            <BorderPane.margin>
+                <Insets bottom="20.0" top="20.0"/>
+            </BorderPane.margin>
+            <font>
+                <Font size="16.0"/>
+            </font>
+        </Label>
+    </top>
+    <center>
+        <VBox fx:id="printingNode" alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" spacing="10.0"
+              BorderPane.alignment="CENTER">
+            <BorderPane.margin>
+                <Insets left="40.0" right="40.0"/>
+            </BorderPane.margin>
+            <children>
+                <Label fx:id="titleLabel" text="Movie name">
+                    <font>
+                        <Font name="System Bold" size="16.0"/>
+                    </font>
+                </Label>
+                <Label fx:id="dayLabel" text="Día: 23/03/17"/>
+                <Label fx:id="roomLabel" layoutX="40.0" layoutY="168.0" text="Sala: B"/>
+                <Label fx:id="hourLabel" layoutX="40.0" layoutY="177.0" text="Hora: 16:23"/>
+                <Label fx:id="seatLabel" layoutX="40.0" layoutY="186.0" text="Localidad: Fila 12, Asiento 3"/>
+            </children>
+            <padding>
+                <Insets bottom="30.0" left="30.0" right="30.0" top="30.0"/>
+            </padding>
+        </VBox>
+    </center>
+    <bottom>
+        <VBox alignment="CENTER_LEFT" spacing="10.0">
+            <HBox alignment="CENTER" spacing="20.0" BorderPane.alignment="CENTER">
+                <BorderPane.margin>
+                    <Insets left="40.0" right="40.0" top="20.0"/>
+                </BorderPane.margin>
+                <children>
+                    <Button mnemonicParsing="false" onAction="#onSelectPrinter" prefWidth="180.0"
+                            text="Seleccionar impresora"/>
+                    <Button mnemonicParsing="false" onAction="#onPrint" prefWidth="180.0" text="Imprimir"/>
+                </children>
+            </HBox>
+            <Label fx:id="selectedPrinterLabel" text="Impresora seleccionada: A"/>
+            <Label fx:id="printingStatus" text="Estado de la impresión:"/>
+            <BorderPane.margin>
+                <Insets left="40.0" right="40.0" top="40.0"/>
+            </BorderPane.margin>
+            <padding>
+                <Insets bottom="30.0" left="30.0" right="30.0"/>
+            </padding>
+        </VBox>
+
+    </bottom>
+</BorderPane>
