@@ -69,10 +69,15 @@ public class TicketPrinterController implements Initializable {
                 job.endJob();
                 printNextTicket(event);
             } else {
-                logger.log(Level.SEVERE, "Fallo al imprimir");
+                logger.log(Level.SEVERE, "Printing failed");
+
+                CinemaHelper.getInstance().showErrorDialog("Fallo al imprimir");
+
             }
         } else {
-            logger.log(Level.WARNING, "No puede crearse el job de impresión.");
+            logger.log(Level.WARNING, "Can't create printing task.");
+
+            CinemaHelper.getInstance().showErrorDialog("No puede crearse el job de impresión.");
         }
     }
 
