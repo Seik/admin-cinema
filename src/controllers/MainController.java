@@ -56,17 +56,15 @@ public class MainController implements Initializable {
         dateSelectorPurchase.getEditor().clear();
         movieSelector.getItems().clear();
         hourSelector.getItems().clear();
+
+        updateListViewWithSelectedDate();
     };
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
         listView.setItems(filteredList);
-        listView.setCellFactory(ticketReservationListView -> new ReservationListViewCell(() -> {
-            LocalDate date = reservationsDatePicker.getValue();
-
-            updateListViewWithDate(date);
-        }));
+        listView.setCellFactory(ticketReservationListView -> new ReservationListViewCell(this::updateListViewWithSelectedDate));
 
         nameOrPhoneTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             String filter = nameOrPhoneTextField.getText();
@@ -170,12 +168,12 @@ public class MainController implements Initializable {
 
     @FXML
     public void onDateSelectedReservation(ActionEvent event) {
-        LocalDate date = reservationsDatePicker.getValue();
-
-        updateListViewWithDate(date);
+        updateListViewWithSelectedDate();
     }
 
-    private void updateListViewWithDate(LocalDate date) {
+    private void updateListViewWithSelectedDate() {
+        LocalDate date = reservationsDatePicker.getValue();
+
         ticketList.clear();
         ticketList.addAll(CinemaHelper.getInstance().getTicketReservations(date));
     }

@@ -18,6 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class TicketReservationController implements Initializable {
+
     Logger logger = Logger.getLogger(getClass().getName());
 
     private TicketReservation ticketReservation;
@@ -30,6 +31,8 @@ public class TicketReservationController implements Initializable {
     private Label clientNameLabel;
     @FXML
     private Label clientPhoneLabel;
+    @FXML
+    public Label hourLabel;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -67,10 +70,12 @@ public class TicketReservationController implements Initializable {
     public void setTicketReservation(TicketReservation ticketReservation) {
         this.ticketReservation = ticketReservation;
 
+        String hour = ticketReservation.getShowing().getHoraInicio();
 
         movieTitleLabel.setText(ticketReservation.getShowing().getPelicula().getTitulo());
         clientNameLabel.setText(ticketReservation.getReservation().getNombre());
         clientPhoneLabel.setText(ticketReservation.getReservation().getTelefono());
+        hourLabel.setText("Hora: " + hour);
     }
 
     /**
