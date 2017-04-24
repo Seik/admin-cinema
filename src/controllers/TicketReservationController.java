@@ -42,7 +42,7 @@ public class TicketReservationController implements Initializable {
     private void onPurchaseReservation(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("../layouts/purchase_layout.fxml"));
+            loader.setLocation(getClass().getResource("/layouts/purchase_layout.fxml"));
             BorderPane parent = loader.load();
 
 

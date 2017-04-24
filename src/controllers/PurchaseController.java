@@ -155,7 +155,7 @@ public class PurchaseController implements Initializable {
     private void launchPrinterView() {
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("../layouts/ticket_printer_layout.fxml"));
+            loader.setLocation(getClass().getResource("/layouts/ticket_printer_layout.fxml"));
             BorderPane parent = loader.load();
 
             TicketPrinterController controller = loader.getController();

@@ -112,7 +112,7 @@ public class MainController implements Initializable {
 
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("../layouts/reservation_layout.fxml"));
+            loader.setLocation(getClass().getResource("/layouts/reservation_layout.fxml"));
             VBox parent = loader.load();
 
             Proyeccion showing = CinemaHelper.getInstance().getShowing(movieSelector.getValue(),
@@ -141,7 +141,7 @@ public class MainController implements Initializable {
 
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("../layouts/purchase_layout.fxml"));
+            loader.setLocation(getClass().getResource("/layouts/purchase_layout.fxml"));
             BorderPane parent = loader.load();
 
             Proyeccion showing = CinemaHelper.getInstance().getShowing(movieSelector.getValue(),
