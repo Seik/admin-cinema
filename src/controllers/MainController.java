@@ -62,7 +62,11 @@ public class MainController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
 
         listView.setItems(filteredList);
-        listView.setCellFactory(ticketReservationListView -> new ReservationListViewCell());
+        listView.setCellFactory(ticketReservationListView -> new ReservationListViewCell(() -> {
+            LocalDate date = reservationsDatePicker.getValue();
+
+            updateListViewWithDate(date);
+        }));
 
         nameOrPhoneTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             String filter = nameOrPhoneTextField.getText();
@@ -168,6 +172,10 @@ public class MainController implements Initializable {
     public void onDateSelectedReservation(ActionEvent event) {
         LocalDate date = reservationsDatePicker.getValue();
 
+        updateListViewWithDate(date);
+    }
+
+    private void updateListViewWithDate(LocalDate date) {
         ticketList.clear();
         ticketList.addAll(CinemaHelper.getInstance().getTicketReservations(date));
     }

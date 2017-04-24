@@ -1,5 +1,5 @@
 package utils;
 
 public interface CompletedTaskEvent {
-    void cleanFields();
+    void completedTask();
 }

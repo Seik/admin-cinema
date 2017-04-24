@@ -62,8 +62,8 @@ public class PurchaseController implements Initializable {
         }
 
         if (quantity > CinemaHelper.getInstance().getRemainingSeatsForShowing(showing)) {
-            CinemaHelper.getInstance().showInfoDialog("El numero de localidades seleccionado es superior al de asientos " +
-                    "no reservados");
+            CinemaHelper.getInstance().showInfoDialog("El numero de localidades seleccionadas es superior al de " +
+                    "asientos disponibles");
             return;
         }
 
@@ -89,16 +89,22 @@ public class PurchaseController implements Initializable {
             room.setLocalidades(seatsGrid.getSeats());
             showing.setSala(room);
 
-            Reserva reservation = new Reserva(name, phone, quantity);
+            if (reservation == null) {
+                Reserva reservation = new Reserva(name, phone, quantity);
 
-            showing.getReservas().add(reservation);
+                showing.getReservas().add(reservation);
+            } else {
+                showing.getReservas().remove(reservation);
+            }
+
+            CinemaHelper.getInstance().saveShowing(showing);
 
 
             launchPrinterView();
 
             // Clean fields at main screen
             if (handler != null) {
-                handler.cleanFields();
+                handler.completedTask();
             }
 
             // Close window
@@ -170,7 +176,16 @@ public class PurchaseController implements Initializable {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Dialogo de confirmación");
         alert.setHeaderText("Empezar proceso de impresión");
-        alert.setContentText("Los sitios seleccionados van a ser reservados, ¿Desea proceder a imprimir las entradas?");
+
+        String alertText = "";
+
+        if (reservation == null) {
+            alertText = "Los sitios seleccionados van a ser reservados, ¿Desea proceder a imprimir las entradas?";
+        } else {
+            alertText = "¿Desea proceder a imprimir las entradas?";
+        }
+
+        alert.setContentText(alertText);
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {

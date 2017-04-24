@@ -9,6 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import models.TicketReservation;
+import utils.CompletedTaskEvent;
 
 import java.io.IOException;
 import java.net.URL;
@@ -20,6 +21,8 @@ public class TicketReservationController implements Initializable {
     Logger logger = Logger.getLogger(getClass().getName());
 
     private TicketReservation ticketReservation;
+
+    private CompletedTaskEvent handler;
 
     @FXML
     private Label movieTitleLabel;
@@ -44,6 +47,7 @@ public class TicketReservationController implements Initializable {
 
             int seats = ticketReservation.getReservation().getNumLocalidades();
             controller.setShowing(ticketReservation.getShowing(), seats, ticketReservation.getReservation());
+            controller.setHandler(() -> handler.completedTask());
 
             Scene scene = new Scene(parent);
             Stage stage = new Stage();
@@ -55,6 +59,11 @@ public class TicketReservationController implements Initializable {
         }
     }
 
+    /**
+     * Sets ticket reservation for the controller and fills the views with data
+     *
+     * @param ticketReservation
+     */
     public void setTicketReservation(TicketReservation ticketReservation) {
         this.ticketReservation = ticketReservation;
 
@@ -62,6 +71,15 @@ public class TicketReservationController implements Initializable {
         movieTitleLabel.setText(ticketReservation.getShowing().getPelicula().getTitulo());
         clientNameLabel.setText(ticketReservation.getReservation().getNombre());
         clientPhoneLabel.setText(ticketReservation.getReservation().getTelefono());
+    }
+
+    /**
+     * Sets a handler for the controller
+     *
+     * @param handler
+     */
+    public void setHandler(CompletedTaskEvent handler) {
+        this.handler = handler;
     }
 
 }

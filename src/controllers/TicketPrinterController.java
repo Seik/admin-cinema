@@ -63,20 +63,26 @@ public class TicketPrinterController implements Initializable {
     @FXML
     public void onPrint(ActionEvent event) {
         PrinterJob job = PrinterJob.createPrinterJob(printer);
-        if (job != null) {
-            boolean printed = job.printPage(printingNode);
-            if (printed) {
-                job.endJob();
-                printNextTicket(event);
-            } else {
-                logger.log(Level.SEVERE, "Printing failed");
+        try {
+            if (job != null) {
+                boolean printed = job.printPage(printingNode);
+                if (printed) {
+                    job.endJob();
+                    printNextTicket(event);
+                } else {
+                    logger.log(Level.SEVERE, "Printing failed");
 
-                CinemaHelper.getInstance().showErrorDialog("Fallo al imprimir");
+                    CinemaHelper.getInstance().showErrorDialog("Fallo al imprimir");
+
+                }
+            } else {
+                logger.log(Level.WARNING, "Can't create printing task.");
+
+                CinemaHelper.getInstance().showErrorDialog("No puede crearse el job de impresión.");
 
             }
-        } else {
-            logger.log(Level.WARNING, "Can't create printing task.");
 
+        } catch (Exception e) {
             CinemaHelper.getInstance().showErrorDialog("No puede crearse el job de impresión.");
         }
     }

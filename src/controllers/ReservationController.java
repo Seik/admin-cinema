@@ -74,7 +74,7 @@ public class ReservationController implements Initializable {
         CinemaHelper.getInstance().showInfoDialog("Reserva realizada con éxito.");
 
         // Clean fields at main screen
-        handler.cleanFields();
+        handler.completedTask();
 
         // Close window
         final Node source = (Node) event.getSource();
