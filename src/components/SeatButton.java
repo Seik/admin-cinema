@@ -1,6 +1,5 @@
 package components;
 
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 
 public class SeatButton extends Button {

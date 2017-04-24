@@ -1,19 +1,22 @@
 package controllers;
 
 import com.sun.javafx.collections.ObservableListWrapper;
+import components.ReservationListViewCell;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import modelo.Pelicula;
 import modelo.Proyeccion;
+import models.TicketReservation;
 import utils.CinemaHelper;
 import utils.CompletedTaskEvent;
 
@@ -27,11 +30,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class MainController implements Initializable {
-
     Logger logger = Logger.getLogger(getClass().getName());
 
+    ObservableList<TicketReservation> ticketList = FXCollections.observableArrayList();
+    FilteredList<TicketReservation> filteredList = new FilteredList<>(ticketList);
+
     @FXML
-    public DatePicker dateSelector;
+    public DatePicker dateSelectorPurchase;
     @FXML
     public ComboBox<String> movieSelector;
     @FXML
@@ -40,24 +45,39 @@ public class MainController implements Initializable {
     public Button reservationButton;
     @FXML
     public Button purchaseButton;
+    @FXML
+    public ListView<TicketReservation> listView;
+    @FXML
+    public DatePicker reservationsDatePicker;
+    @FXML
+    public TextField nameOrPhoneTextField;
 
     private CompletedTaskEvent handler = () -> {
-        dateSelector.getEditor().clear();
+        dateSelectorPurchase.getEditor().clear();
         movieSelector.getItems().clear();
         hourSelector.getItems().clear();
     };
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        logger.log(Level.FINE, "Controller initialized");
 
+        listView.setItems(filteredList);
+        listView.setCellFactory(ticketReservationListView -> new ReservationListViewCell());
+
+        nameOrPhoneTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            String filter = nameOrPhoneTextField.getText();
+            if (filter == null || filter.trim().isEmpty()) {
+                filteredList.setPredicate(s -> true);
+            } else {
+                filteredList.setPredicate(ticketReservation -> (ticketReservation.getReservation().getNombre().contains(filter) ||
+                        ticketReservation.getReservation().getTelefono().contains(filter)));
+            }
+        });
     }
 
     @FXML
-    public void onDateSelected(ActionEvent event) {
-        LocalDate date = dateSelector.getValue();
-
-        logger.log(Level.FINE, "Date selected" + date);
+    public void onDateSelectedPurchase(ActionEvent event) {
+        LocalDate date = dateSelectorPurchase.getValue();
 
         List<Pelicula> movies = CinemaHelper.getInstance().getMovies(date);
 
@@ -73,9 +93,7 @@ public class MainController implements Initializable {
     public void onMovieSelected(ActionEvent actionEvent) {
         String movieTitle = movieSelector.getValue();
 
-        logger.log(Level.FINE, "Movie selected" + movieTitle);
-
-        LocalDate date = dateSelector.getValue();
+        LocalDate date = dateSelectorPurchase.getValue();
 
         List<String> hours = CinemaHelper.getInstance().getHoursShowings(movieTitle, date);
 
@@ -85,19 +103,18 @@ public class MainController implements Initializable {
     @FXML
     public void onReservation(ActionEvent actionEvent) {
 
-        if (dateSelector.getValue() == null || movieSelector.getValue() == null || hourSelector.getValue() == null) {
+        if (dateSelectorPurchase.getValue() == null || movieSelector.getValue() == null || hourSelector.getValue() == null) {
             CinemaHelper.getInstance().showInfoDialog("Rellene todos los campos para continuar.");
             return;
         }
 
-        logger.log(Level.FINE, "Start reservation flow");
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("../layouts/reservation_layout.fxml"));
             VBox parent = loader.load();
 
             Proyeccion showing = CinemaHelper.getInstance().getShowing(movieSelector.getValue(),
-                    dateSelector.getValue(), hourSelector.getValue());
+                    dateSelectorPurchase.getValue(), hourSelector.getValue());
 
             ReservationController controller = loader.getController();
             controller.setShowing(showing);
@@ -115,32 +132,43 @@ public class MainController implements Initializable {
 
     @FXML
     public void onPurchase(ActionEvent actionEvent) {
-        if (dateSelector.getValue() == null || movieSelector.getValue() == null || hourSelector.getValue() == null) {
+        if (dateSelectorPurchase.getValue() == null || movieSelector.getValue() == null || hourSelector.getValue() == null) {
             CinemaHelper.getInstance().showInfoDialog("Rellene todos los campos para continuar.");
             return;
         }
 
-        logger.log(Level.FINE, "Start purchase flow");
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("../layouts/purchase_layout.fxml"));
             BorderPane parent = loader.load();
 
             Proyeccion showing = CinemaHelper.getInstance().getShowing(movieSelector.getValue(),
-                    dateSelector.getValue(), hourSelector.getValue());
+                    dateSelectorPurchase.getValue(), hourSelector.getValue());
 
             PurchaseController controller = loader.getController();
-            controller.setShowing(showing);
+
+            int seats = CinemaHelper.getInstance().getRemainingSeatsForShowing(showing);
+
+            controller.setShowing(showing, seats, null);
             controller.setHandler(handler);
-            controller.init();
 
             Scene scene = new Scene(parent);
             Stage stage = new Stage();
-            stage.setTitle("Purchase");
+            stage.setTitle("Compra de tickets");
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Failed to create new Window", e);
+
+            CinemaHelper.getInstance().showErrorDialog("Ocurrió un error al crear la ventana.");
         }
+    }
+
+    @FXML
+    public void onDateSelectedReservation(ActionEvent event) {
+        LocalDate date = reservationsDatePicker.getValue();
+
+        ticketList.clear();
+        ticketList.addAll(CinemaHelper.getInstance().getTicketReservations(date));
     }
 }

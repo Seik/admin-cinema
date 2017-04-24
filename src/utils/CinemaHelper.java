@@ -7,6 +7,7 @@ import modelo.Pelicula;
 import modelo.Proyeccion;
 import modelo.Reserva;
 import modelo.Sala;
+import models.TicketReservation;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -81,12 +82,34 @@ public class CinemaHelper {
     }
 
     /**
+     * Returns a list with all the TicketReservations for today
+     *
+     * @param date
+     * @return TicketReservation
+     */
+    public List<TicketReservation> getTicketReservations(@NotNull LocalDate date) {
+        List<TicketReservation> ticketReservations = new ArrayList<>();
+
+        List<Proyeccion> showings = db.getProyeccionesDia(date);
+
+        for (Proyeccion showing : showings) {
+            List<Reserva> reservations = showing.getReservas();
+
+            for (Reserva reservation : reservations) {
+                ticketReservations.add(new TicketReservation(showing, reservation));
+            }
+        }
+
+        return ticketReservations;
+    }
+
+    /**
      * Get a showing based on title, date and hour
      *
      * @param title
      * @param date
      * @param hour
-     * @return
+     * @return Showing
      */
     public Proyeccion getShowing(String title, LocalDate date, String hour) {
         return db.getProyeccion(title, date, hour);
@@ -105,7 +128,7 @@ public class CinemaHelper {
      * @param showing
      * @return if show is full
      */
-    public boolean isShowingFull(Proyeccion showing) {
+    public boolean isShowingFull(@NotNull Proyeccion showing) {
         Sala room = showing.getSala();
         if (room.getCapacidad() <= room.getEntradasVendidas()) {
             return true;

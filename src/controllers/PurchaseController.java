@@ -32,6 +32,8 @@ public class PurchaseController implements Initializable {
 
     private SeatsGrid seatsGrid;
 
+    private Reserva reservation;
+
     @FXML
     public BorderPane borderPane;
     @FXML
@@ -47,33 +49,33 @@ public class PurchaseController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
     }
 
-    public void init() {
-        logger.log(Level.FINE, "Setting up controller ");
-
-        seatsGrid = new SeatsGrid(showing.getSala(), 12, 18);
-
-        notReservedSeatsLabel.setText("Butacas no reservadas: " +
-                CinemaHelper.getInstance().getRemainingSeatsForShowing(showing));
-
-        borderPane.centerProperty().setValue(seatsGrid);
-    }
-
     @FXML
     public void onPurchase(ActionEvent event) {
-        logger.log(Level.FINE, "On purchase triggered.");
 
         String name = nameTextField.getText().trim();
         String phone = phoneTextField.getText().trim();
         int quantity = seatsGrid.getReservedSeats();
 
         if (quantity == 0) {
-            CinemaHelper.getInstance().showInfoDialog("Por favor, seleccione algún asiento para continuar.");
+            CinemaHelper.getInstance().showInfoDialog("Por favor, seleccione alguna localidad para continuar.");
             return;
         }
 
         if (quantity > CinemaHelper.getInstance().getRemainingSeatsForShowing(showing)) {
-            CinemaHelper.getInstance().showInfoDialog("El numero de asientos seleccionado es superior al de asientos " +
+            CinemaHelper.getInstance().showInfoDialog("El numero de localidades seleccionado es superior al de asientos " +
                     "no reservados");
+            return;
+        }
+
+        if (reservation != null && quantity > reservation.getNumLocalidades()) {
+            CinemaHelper.getInstance().showInfoDialog("La cantidad de localidades seleccionadas es superior al de " +
+                    "la reserva. \n Numero de localidades a seleccionar: " + reservation.getNumLocalidades());
+            return;
+        }
+
+        if (reservation != null && quantity < reservation.getNumLocalidades()) {
+            CinemaHelper.getInstance().showInfoDialog("La cantidad de localidades seleccionadas es inferior al de " +
+                    "la reserva. \n Numero de localidades a seleccionar: " + reservation.getNumLocalidades());
             return;
         }
 
@@ -95,7 +97,9 @@ public class PurchaseController implements Initializable {
             launchPrinterView();
 
             // Clean fields at main screen
-            handler.cleanFields();
+            if (handler != null) {
+                handler.cleanFields();
+            }
 
             // Close window
             final Node source = (Node) event.getSource();
@@ -105,12 +109,29 @@ public class PurchaseController implements Initializable {
     }
 
     /**
-     * Sets a showing for the controller
+     * Sets a showing for the controller and initialize main grid pane
      *
      * @param showing
+     * @param reservation
      */
-    public void setShowing(Proyeccion showing) {
+    public void setShowing(Proyeccion showing, int seats, Reserva reservation) {
         this.showing = showing;
+        this.reservation = reservation;
+
+        seatsGrid = new SeatsGrid(showing.getSala(), 12, 18);
+
+        String seatsToFill = "";
+
+        if (reservation == null) {
+            seatsToFill += "Butacas no reservadas: " + seats;
+        } else {
+            seatsToFill += "Butacas a seleccionar: " + seats;
+        }
+
+        notReservedSeatsLabel.setText(seatsToFill);
+
+
+        borderPane.centerProperty().setValue(seatsGrid);
     }
 
     /**
@@ -126,7 +147,6 @@ public class PurchaseController implements Initializable {
      * Launchs the view for printing the ticket
      */
     private void launchPrinterView() {
-        logger.log(Level.FINE, "Start purchase flow");
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("../layouts/ticket_printer_layout.fxml"));
@@ -142,6 +162,7 @@ public class PurchaseController implements Initializable {
             stage.show();
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Failed to create new Window", e);
+            CinemaHelper.getInstance().showErrorDialog("Ocurrió un error al crear la ventana.");
         }
     }
 
