@@ -8,9 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import modelo.Proyeccion;
 import models.TicketReservation;
-import utils.CinemaHelper;
 
 import java.io.IOException;
 import java.net.URL;
