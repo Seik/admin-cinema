@@ -93,6 +93,9 @@ public class PurchaseController implements Initializable {
                 Reserva reservation = new Reserva(name, phone, quantity);
 
                 showing.getReservas().add(reservation);
+
+                int soldTickets = showing.getSala().getEntradasVendidas();
+                showing.getSala().setEntradasVendidas(soldTickets + reservation.getNumLocalidades());
             } else {
                 showing.getReservas().remove(reservation);
             }

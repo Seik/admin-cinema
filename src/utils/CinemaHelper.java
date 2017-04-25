@@ -1,7 +1,6 @@
 package utils;
 
 import accesoaBD.AccesoaBD;
-import com.sun.istack.internal.NotNull;
 import javafx.scene.control.Alert;
 import modelo.Pelicula;
 import modelo.Proyeccion;
@@ -30,7 +29,7 @@ public class CinemaHelper {
         return instance;
     }
 
-    public List<Pelicula> getMovies(@NotNull LocalDate date) {
+    public List<Pelicula> getMovies(LocalDate date) {
         return db.getPeliculas(date);
     }
 
@@ -38,7 +37,7 @@ public class CinemaHelper {
      * @param name
      * @return movie
      */
-    public Pelicula getMovieByName(@NotNull String name) {
+    public Pelicula getMovieByName(String name) {
         List<Pelicula> movies = db.getTodasPeliculas();
 
         for (Pelicula movie : movies) {
@@ -68,17 +67,12 @@ public class CinemaHelper {
      * @param showing
      * @return remainig seats for a specific show
      */
-    public int getRemainingSeatsForShowing(@NotNull Proyeccion showing) {
+    public int getRemainingSeatsForShowing(Proyeccion showing) {
         int maxSeats = showing.getSala().getCapacidad();
 
-        List<Reserva> reservations = showing.getReservas();
+        int soldTickets = showing.getSala().getEntradasVendidas();
 
-        int seatsReserved = 0;
-        for (Reserva reservation : reservations) {
-            seatsReserved += reservation.getNumLocalidades();
-        }
-
-        return maxSeats - seatsReserved;
+        return maxSeats - soldTickets;
     }
 
     /**
@@ -87,7 +81,7 @@ public class CinemaHelper {
      * @param date
      * @return TicketReservation
      */
-    public List<TicketReservation> getTicketReservations(@NotNull LocalDate date) {
+    public List<TicketReservation> getTicketReservations(LocalDate date) {
         List<TicketReservation> ticketReservations = new ArrayList<>();
 
         List<Proyeccion> showings = db.getProyeccionesDia(date);
@@ -128,7 +122,7 @@ public class CinemaHelper {
      * @param showing
      * @return if show is full
      */
-    public boolean isShowingFull(@NotNull Proyeccion showing) {
+    public boolean isShowingFull(Proyeccion showing) {
         Sala room = showing.getSala();
         if (room.getCapacidad() <= room.getEntradasVendidas()) {
             return true;

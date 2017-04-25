@@ -69,6 +69,9 @@ public class ReservationController implements Initializable {
 
         showing.getReservas().add(reservation);
 
+        int soldTickets = showing.getSala().getEntradasVendidas();
+        showing.getSala().setEntradasVendidas(soldTickets + reservation.getNumLocalidades());
+
         CinemaHelper.getInstance().saveShowing(showing);
 
         CinemaHelper.getInstance().showInfoDialog("Reserva realizada con éxito.");
